@@ -1,4 +1,4 @@
-# rangesat_tools
+# Rangesat Tools
 A collection of graphical JavaScript web tools for RangeSAT
 
 **Tools for Anonymous Users:**

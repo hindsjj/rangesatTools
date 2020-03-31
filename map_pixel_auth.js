@@ -238,7 +238,7 @@ function clickHandler(e) {
   }
   $("#rasterValue").html(rasterValue);
 
-  var html = "<table class='popUpTbl'><tr><td><strong>" + indicator.toUpperCase() + ":</strong></td><td>" + rasterValue + "</td></tr>" + pp;
+  var html = "<table class='popUpTbl'><tr class='border-bot'><td><strong>" + indicator.toUpperCase() + ":</strong></td><td>" + rasterValue + "</td></tr>" + pp;
 
   map.openPopup(html, e.latlng, {
     offset: L.point(0, 0)

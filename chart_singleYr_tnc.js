@@ -266,9 +266,9 @@ function gmetFuncMy(arr) {
    }
 
    if(clim == 'ppt')  { my_climVar = my_pr;   climColorSy = 'cyan'; climColorMy = 'lightskyblue'; };
-   if(clim == 'pet')  { my_climVar = my_pet;   climColorSy = 'green'; climColorMy = 'darkgreen'; };
+   if(clim == 'pet')  { my_climVar = my_pet;   climColorSy = 'limegreen'; climColorMy = 'darkgreen'; };
    if(clim == 'tmin') { my_climVar = my_tmmn; climColorSy = 'gold'; climColorMy = 'goldenrod'; };
-   if(clim == 'tmax') { my_climVar = my_tmmx; climColorSy = 'orange'; climColorMy = 'darkorange'; };
+   if(clim == 'tmax') { my_climVar = my_tmmx; climColorSy = 'lightcoral'; climColorMy = 'indianred'; };
  
 }
 
@@ -470,7 +470,7 @@ function updateChart() {
         marker: {
           //color: 'lightskyblue',
           color: climColorMy,
-          opacity: 0.5
+          opacity: 0.6
         }
       },
       {
@@ -485,7 +485,7 @@ function updateChart() {
         marker: {
           //color: 'cyan',
           color: climColorSy,
-          opacity: 0.3
+          opacity: 0.5
         }
       },
       {

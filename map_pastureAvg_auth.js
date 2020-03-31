@@ -16,6 +16,7 @@ var xmlhttp = new XMLHttpRequest();
 let layerName = '';
 let usersRanch = [];
 let usrRanch = '';
+let tbl = '';
 
 //----------------------//
 // Build Date Dropdowns //
@@ -248,6 +249,9 @@ function getPastureStats() {
 
 function updateMap(arr) {
 
+   tbl = '';
+   tbl = '<table class="table-sm" style="max-width:700px"><thead><tr><th>Date</th><th>Mgmt Area</th><th>Pasture</th><th>Acres</th><th>Biomass (lbs/acre)</th></tr></thead><tbody>';
+
    if(usersRanch) { map.removeLayer(usersRanch); }  // if usersRanch layer exists, remove it before updating
 
    usersRanch = L.geoJson(ranch, {
@@ -277,6 +281,9 @@ function updateMap(arr) {
                   if(pastureBiomass >= 2000) { varColor = 'dodgerblue'; }
 
                   layer.setStyle({ color: varColor });
+
+                  tbl = tbl + '<tr><td>' + yr + '-' + mo1 + mo2 + '</td><td>' + usrRanch + '</td><td>' + arr[i].pasture + '</td><td>' + (feature.properties.Hectares * 2.471).toFixed(2) + '</td><td>' + (arr[i].biomass_mean_gpm).toFixed(0) + '</td></tr>';
+
             }
          }
 
@@ -284,7 +291,7 @@ function updateMap(arr) {
          acres = acres.toFixed(1);
          layerName = feature.properties.PASTURE;
 
-         layer.bindPopup('<table class="popUpTbl"><tr><td><strong>Area: </strong></td><td>' + feature.properties.Ranch + '</td></tr><tr><td><strong>Pasture: </strong></td><td>' + feature.properties.PASTURE + '</td></tr><tr><td><strong>Acres: </strong></td><td>' + acres + '</td></tr><tr><td><strong>Biomass: </strong></td><td>' + pastureBiomass + ' lbs/acre</td></tr></table>');
+         layer.bindPopup('<table class="popUpTbl"><tr class="border-bot"><td><strong>BIOMASS: </strong></td><td>' + pastureBiomass + ' lbs/acre</td></tr><tr><td><strong>Area: </strong></td><td>' + feature.properties.Ranch + '</td></tr><tr><td><strong>Pasture: </strong></td><td>' + feature.properties.PASTURE + '</td></tr><tr><td><strong>Acres: </strong></td><td>' + acres + '</td></tr></table>');
 
          layer.on({
             mouseover: function(e) {
@@ -302,6 +309,9 @@ function updateMap(arr) {
        }
 
    }).addTo(map);
+
+  tbl = tbl + '</tbody></table>';
+  $('.tblPastureAvg').html(tbl);
 
   // Add/update PRINT button
   $('.leaflet-control-easyPrint').remove();  // remove any existing print buttons

@@ -1,5 +1,8 @@
-// Set Defaults
-var marker;
+/* This script creates a Landsat scene map for authenticated users.
+ * It is used with the script map_scene_select.js
+ */
+
+/* Set defaults */
 let url = '';
 let usrRanch = $("#ddRanch").val();
 let bndyColor = '#ffffff';
@@ -7,15 +10,15 @@ let opac = 0.8;
 let usersRanch = [];
 let dMin = -9998;
 let dMax = 10000;
+let pp = '</table>';
 
-//------------------//
-// On change events //
-//------------------//
+/*------------------
+ * On change events 
+ *------------------*/
 
 $('#ddRanch').change(function() {
    usrRanch = $(this).val();
    if(usersRanch) { map.removeLayer(usersRanch); }   // clear existing ranch 
-   if(marker) { rmMarker(); }
    updateRanch();
    map.removeLayer(olay); // clear Landsat overlay
    updateMap();
@@ -36,18 +39,18 @@ $('#q1').click(function(){
    $('#indicator-help').toggle(500);
 });
 
-//----------------//
-// INITIALIZE MAP //
-//----------------//
+/*----------------
+ * INITIALIZE MAP 
+ *----------------*/
 
-// Basemaps
+/* Basemaps */
 var googSat = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{ maxZoom: 16, subdomains:['mt0','mt1','mt2','mt3'] });
 var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
       maxZoom: 17,
       attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
 });
 
-// default map view
+/* Default map view */
 var map = L.map('map', {
    center: [45.6, -117.2],
    zoom: 10,
@@ -59,7 +62,7 @@ var baseLayers = {
    "Satellite": googSat
 };
 
-// Custom NDVI and Biomass color scalex
+/* Custom NDVI and Biomass color scale */
 plotty.addColorScale("ndvicolors",   // identifier
    ["#a50026", "#d73027", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850", "#006837"],  // color steps
    [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]);    // percentage steps
@@ -68,51 +71,17 @@ plotty.addColorScale("biomasscolors",   // identifier
    ["#9e0142", "#d53e4f", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#e6f598", "#abdda4", "#66c2a5", "#3288bd", "#5e4fa2"],  // color steps
    [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]);    // percentage steps
 
-// Add PRINT button
-var printer = L.easyPrint({
-   title: 'Download PNG image',
-   position: 'bottomright',
-   sizeModes: ['Current', 'A4Portrait', 'A4Landscape'],
-   filename: 'rangeSatMap',
-   exportOnly: true,
-   hideControlContainer: true /*,
-   customWindowTitle: 'Metadata goes here',  // not working
-   customSpinnerClass: 'epLoader'  // not working   */
-}).addTo(map);
 
-// Disable scroll wheel zoom
+/* Disable scroll wheel zoom */
 map.scrollWheelZoom.disable();
 
-// Add layer toggle controller
+/* Add layer toggle controller */
 L.control.layers(baseLayers).addTo(map);
 
-// On map click, set lat/lon and get raster value
-map.on('click', function(e) {
-//map.on('mousemove', function(e) {
-   if (!marker) {
-       marker = L.marker([e.latlng.lat,e.latlng.lng]).addTo(map);
-   } else {
-       marker.setLatLng([e.latlng.lat,e.latlng.lng]);
-   }
-   var rasterValue = olay.getValueAtLatLng(e.latlng.lat,e.latlng.lng).toFixed(1);
 
-   if(indicator === 'ndvi' || indicator === 'nbr' || indicator === 'nbr2') {
-      rasterValue = rasterValue/10000;
-      rasterValue = rasterValue.toFixed(2);  // round to 2 decimal places
-      marker.bindPopup(indicator + ': ' + rasterValue).openPopup();
-   } else {
-      rasterValue = rasterValue * 8.92179122;  // convert biomass from g/m2 to lbs/acre
-      rasterValue = rasterValue.toFixed(0);  // round to 2 decimal places
-      marker.bindPopup(indicator + ': ' + rasterValue + ' lbs/acre').openPopup();
-   }
-   $("#rasterValue").html(rasterValue);
-
-});
-
-
-//-------------------------------//
-// Load geojson ranch boundaries //
-//-------------------------------//
+/*-------------------------------
+ * Load geojson ranch boundaries 
+ *-------------------------------*/
 
 updateRanch(); // on initial page load
 
@@ -136,7 +105,6 @@ function updateRanch() {
    loadJSONFile(function(response) {
       var ranch = JSON.parse(response);
 
-      // update ranch overlay
       usersRanch = L.geoJson(ranch, {
          style: {
             color: bndyColor,
@@ -145,7 +113,6 @@ function updateRanch() {
             fillOpacity: 0.0
          },
          onEachFeature: function(feature, layer) {
-         //layer.bindPopup('<strong>Pasture: </strong>' + feature.properties.PASTURE + '<br /><strong>Hectares: </strong>' + feature.properties.Hectares + '<br /><strong>Mgmt Area: </strong>' + feature.properties.Ranch);
             layer.on({
                mouseover: function(e) {
                   e.target.setStyle({
@@ -156,13 +123,17 @@ function updateRanch() {
                   e.target.setStyle({
                      weight: 1
                   });
-               }
+               },
+	       click: function(e) {
+		  var acres = 2.471 * feature.properties.Hectares;
+      		  acres = acres.toFixed(2);
+                  pp = "<tr><td><strong>Area: </strong></td><td>" + feature.properties.Ranch + "</td></tr><tr><td><strong>Pasture: </strong></td><td>" + feature.properties.PASTURE + "</td></tr><tr><td><strong>Acres: </strong></td><td>" + acres + "</td></tr></table>"
+	       }
             });
          },
-         interactive: false  // this allows map click to pass through polygon and return raster value
+         interactive: true  // false allows map click to pass through polygon and return raster value
       }).addTo(map);
 
-      //console.log(usrRanch + " pastures added to map");
       map.fitBounds(usersRanch.getBounds());  // zooms to user's ranch
 
    });
@@ -170,9 +141,9 @@ function updateRanch() {
 }
 
 
-//---------------------------------//
-// UPDATE MAP with user selections //
-//---------------------------------//
+/*---------------------------------
+ * UPDATE MAP with user selections 
+ *---------------------------------*/
 
 function updateMap() {
 
@@ -196,14 +167,13 @@ function updateMap() {
          $('#sceneSatellite').html('Other');
    }
 
-
    if(indicator === 'ndvi' || indicator === 'nbr' || indicator === 'nbr2') {
 
       olay = L.leafletGeotiff( 
          url='https://rangesat.nkn.uidaho.edu/api/raster/Zumwalt/' + selScene + '/' + indicator + '/',
          options={ band: 0,
                 name: 'NDVI',
-                //opacity: 0.8,
+                /*opacity: 0.8,*/
                 displayMin: dMin,
                 displayMax: dMax,
                 colorScale: 'ndvicolors',
@@ -223,7 +193,7 @@ function updateMap() {
          url="https://rangesat.nkn.uidaho.edu/api/raster/Zumwalt/" + selScene + "/" + indicator + "/?ranches=['" + usrRanch + "']",
          options={ band: 0,
                 name: 'BIOMASS',
-                //opacity: 0.8,
+                /*opacity: 0.8,*/
                 displayMin: 2,
                 displayMax: 280,
                 colorScale: 'biomasscolors',
@@ -241,4 +211,42 @@ function updateMap() {
 
    $('#downloadScene').attr('href',url);
 
+   /* Add/update PRINT button */
+  $('.leaflet-control-easyPrint').remove();  // remove any existing print buttons
+   var printer = L.easyPrint({
+      title: 'Download PNG image',
+      position: 'bottomright',
+      sizeModes: ['Current', 'A4Portrait', 'A4Landscape'],
+      filename: 'pixelMap_' + selDate + '_' + usrRanch,
+      exportOnly: true,
+      hideControlContainer: true
+   }).addTo(map);
+
 } 
+
+/* Map click handler to build popup window */
+function clickHandler(e) {
+
+  var rasterValue = olay.getValueAtLatLng(e.latlng.lat,e.latlng.lng).toFixed(1);
+
+  if(indicator === 'ndvi' || indicator === 'nbr' || indicator === 'nbr2') {
+       rasterValue = (rasterValue/10000).toFixed(2);  // round to 2 decimal places
+       if(rasterValue == -1) { rasterValue = 'N/A'; }
+  } else {
+       rasterValue = (rasterValue * 8.92179122).toFixed(0);  // convert biomass from g/m2 to lbs/acre, round to integer
+       if(rasterValue < 0) { rasterValue = 'N/A'; } else { rasterValue = rasterValue + ' lbs/acre'; }
+  }
+  $("#rasterValue").html(rasterValue);
+
+  var html = "<table class='popUpTbl'><tr><td><strong>" + indicator.toUpperCase() + ":</strong></td><td>" + rasterValue + "</td></tr>" + pp;
+
+  map.openPopup(html, e.latlng, {
+    offset: L.point(0, 0)
+  });
+
+  /* Now, reset pp in case next map click is not within a pasture */
+  pp = '</table>';
+
+}
+
+map.on('click', clickHandler);

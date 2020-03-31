@@ -1,14 +1,15 @@
 /* This script handles Landsat scene selections.
- * Used with map_pixel_tnc.js and map_pixel_auth.js
+ * It is used with map_pixel_tnc.js and map_pixel_auth.js
  */
 
-//-----------------------------------------//
-// Initialize dropdowns, arrays, variables //
-//-----------------------------------------//
+/*-----------------------------------------
+ * Initialize dropdowns, arrays, variables 
+ *-----------------------------------------*/
 
 let ddYear = $('#ddYear');
 let ddMonth = $('#ddMonth');
 let ddDay = $('#ddDay');
+let mon = '';
 ddYear.empty();
 ddMonth.empty();
 ddDay.empty();
@@ -42,20 +43,19 @@ function refreshScene() {
 
 }
 
-//-----------------------------//
-// ON CHANGES TO VEG INDICATOR //
-//-----------------------------//
+/*-----------------------------
+ * ON CHANGES TO VEG INDICATOR 
+ *-----------------------------*/
 
 $('#indicator').change(function() {
    indicator = $(this).val();
    map.removeLayer(olay);
    updateMap();
-   rmMarker();
 });
 
-//--------------------//
-// ON CHANGES TO DATE //
-//--------------------//
+/*--------------------
+ * ON CHANGES TO DATE 
+ *--------------------*/
 
 /* Changes to DAY */
 $('#ddDay').change(function() {
@@ -90,7 +90,7 @@ $('#ddMonth').change(function() {
       }
    }
    $('#ddDay').append(optsDay);
-   // above has duplicates, so remove them
+   /* above has duplicates, so remove them */
    var usedDays = {};
    $("#ddDays > option").each(function () {
       if(usedDays[this.text]) {
@@ -119,15 +119,31 @@ $('#ddYear').change(function() {
    ddMonth.empty();     // set Month dropdown to empty
    ddDay.empty();     // set Day dropdown to empty
 
-   // rebuild MONTH list using YR as filter
+   /* rebuild MONTH list using YR as filter */
    var optsMo = '';
    for ( var i=0; i < sceneDates.length; i++ ) {
       if(sceneDates[i].substring(0,4) === selYr) {
-         optsMo += '<option value="'+ sceneDates[i].substring(4,6) + '">' + sceneDates[i].substring(4,6) + '</option>';
+
+         switch ( sceneDates[i].substring(4,6) ) {
+              case '01': mon='Jan'; break;
+              case '02': mon='Feb'; break;
+              case '03': mon='Mar'; break;
+              case '04': mon='Apr'; break;
+              case '05': mon='May'; break;
+              case '06': mon='Jun'; break;
+              case '07': mon='Jul'; break;
+              case '08': mon='Aug'; break;
+              case '09': mon='Sep'; break;
+              case '10': mon='Oct'; break;
+              case '11': mon='Nov'; break;
+              case '12': mon='Dec'; break;
+         }
+
+         optsMo += '<option value="'+ sceneDates[i].substring(4,6) + '">' + mon + '</option>';
       }
    }
    $('#ddMonth').append(optsMo);
-   // the above has duplicates, so run the following to remove them
+   /* the above has duplicates, so run the following to remove them */
    var usedMonths = {};
    $("#ddMonth > option").each(function () {
       if(usedMonths[this.text]) {
@@ -139,7 +155,7 @@ $('#ddYear').change(function() {
    $('#ddMonth option:eq(0)').attr('selected','selected');
    selMo = $('#ddMonth option:selected').val();
 
-   // rebuild DAY list using YR and MONTH as filter
+   /* rebuild DAY list using YR and MONTH as filter */
    var optsDay = '';
    for ( var i=0; i < sceneDates.length; i++ ) {
       if(sceneDates[i].substring(0,4) === selYr && sceneDates[i].substring(4,6) === selMo) {
@@ -147,7 +163,7 @@ $('#ddYear').change(function() {
       }
    }
    $('#ddDay').append(optsDay);
-   // the above has duplicates, so run the following to remove them
+   /* the above has duplicates, so run the following to remove them */
    var usedDay = {};
    $("#ddDay > option").each(function () {
       if(usedDay[this.text]) {
@@ -163,20 +179,22 @@ $('#ddYear').change(function() {
 
 });  
 
-// For ANY change to DATE dropdowns
-$('#ddYear, #ddMonth, #ddDay').change(function() {
+/* For ANY change to dropdowns */
+$('select').change(function() {
+//$('#ddYear, #ddMonth, #ddDay').change(function() {
    map.removeLayer(olay);
-   rmMarker();
+   map.closePopup();
+   $('#rasterValue').html("?");
    $('#dateConcat').html(selYr + selMo + selDay);
    refreshScene();
 });
 
 
-//----------------------------//
-// Fetch latest Landsat Scene //
-//----------------------------//
+/*----------------------------
+ * Fetch latest Landsat Scene 
+ *----------------------------*/
 
-// Use CALLBACK approach
+/* Use CALLBACK approach */
 const latestLandsat = callback => {
 
    fetch('https://rangesat.nkn.uidaho.edu/api/scenemeta/Zumwalt/?pasture_coverage_threshold=0.5&filter=latest')
@@ -184,7 +202,7 @@ const latestLandsat = callback => {
          return response.json()
       })
       .then(data => {
-         //console.log('LATEST SCENE: ' + data);
+         /* console.log('LATEST SCENE: ' + data); */
          callback ({ text: data })
       })
       .catch(err => {
@@ -194,23 +212,23 @@ const latestLandsat = callback => {
 }
 
 latestLandsat(initScene => {
-   //console.log("CALLBACK Latest Scene: "+initScene.text);
+   /* console.log("CALLBACK Latest Scene: "+initScene.text); */
    latestScene = initScene.text;
    loadScenesList();
 })
 
-//----------------------------------//
-// ON INITIAL PAGE LOAD:            //
-// Get list of all Landsat Scenes   //
-// Use latest scene to set defaults //
-//----------------------------------//
+/*----------------------------------
+ * ON INITIAL PAGE LOAD:           
+ * Get list of all Landsat Scenes   
+ * Use latest scene to set defaults 
+ *----------------------------------*/
 
 function loadScenesList() {
 
-   // This url contains names of scenes in Zumwalt
+   /* This url contains names of scenes in Zumwalt */
    const url_scenes = 'https://rangesat.nkn.uidaho.edu/api/scenemeta/Zumwalt/?pasture_coverage_threshold=0.5';
 
-   // Populate dropdown with list of scenes
+   /* Populate dropdown with list of scenes */
    $.getJSON(url_scenes, function (data) {
       $.each(data, function (key, entry) {
          var ddate = entry.split("_");
@@ -231,14 +249,14 @@ function loadScenesList() {
       const finalYrs = revYrs.filter(uniqYrs);   // this is the years list we want
 
 
-      // set dropdown options for YEAR
+      /* set dropdown options for YEAR */
       var optsYr = '';
       for (var i=0; i < finalYrs.length; i++){
          optsYr += '<option value="'+ finalYrs[i] + '">' + finalYrs[i] + '</option>';
       }
       $('#ddYear').append(optsYr);
 
-      // set initial year to be from latest scene
+      /* set initial year to be from latest scene */
       $('#ddYear option').each(function(){
          if ($(this).val() == latestScene.substring(17,21))
              $(this).attr('selected','selected');
@@ -246,15 +264,33 @@ function loadScenesList() {
       selYr = latestScene.substring(17,21);
 
 
-      // set dropdown options for MONTH filtered by initial YR
+      /* set dropdown options for MONTH filtered by initial YR */
       var optsMo = '';
       for ( var i=0; i < sceneDates.length; i++ ) {
          if(sceneDates[i].substring(0,4) === latestScene.substring(17,21)) {
-            optsMo += '<option value="'+ sceneDates[i].substring(4,6) + '">' + sceneDates[i].substring(4,6) + '</option>';
+
+	  switch ( sceneDates[i].substring(4,6) ) {
+              case '01': mon='Jan'; break;
+              case '02': mon='Feb'; break;
+              case '03': mon='Mar'; break;
+              case '04': mon='Apr'; break;
+              case '05': mon='May'; break;
+              case '06': mon='Jun'; break;
+              case '07': mon='Jul'; break;
+              case '08': mon='Aug'; break;
+              case '09': mon='Sep'; break;
+              case '10': mon='Oct'; break;
+              case '11': mon='Nov'; break;
+              case '12': mon='Dec'; break;
+         }
+
+         optsMo += '<option value="'+ sceneDates[i].substring(4,6) + '">' + mon + '</option>';
+
+         /* optsMo += '<option value="'+ sceneDates[i].substring(4,6) + '">' + sceneDates[i].substring(4,6) + '</option>'; */
          }
       }
       $('#ddMonth').append(optsMo);
-      // the above may have duplicates, so run the following to remove them
+      /* the above may have duplicates, so run the following to remove them */
       var usedMonths = {};
       $("#ddMonth > option").each(function () {
          if(usedMonths[this.text]) {
@@ -263,14 +299,14 @@ function loadScenesList() {
             usedMonths[this.text] = this.value;
          }
       });
-      // set initial month to be from latest scene 
+      /* set initial month to be from latest scene */
       $('#ddMonth option').each(function(){
          if ($(this).val() == latestScene.substring(21,23))
              $(this).attr('selected','selected');
       });
  
 
-      // set dropdown options for DAY filtered by initial MONTH and YEAR
+      /* set dropdown options for DAY filtered by initial MONTH and YEAR */
       var optsDay = '';
       for ( var i=0; i < sceneDates.length; i++ ) {
          if(sceneDates[i].substring(0,4) === latestScene.substring(17,21) && sceneDates[i].substring(4,6) === latestScene.substring(21,23)) {
@@ -278,7 +314,7 @@ function loadScenesList() {
          }
       }
       $('#ddDay').append(optsDay);
-      // the above may have duplicates, so run the following to remove them
+      /* the above may have duplicates, so run the following to remove them */
       var usedDays = {};
       $("#ddDays > option").each(function () {
          if(usedDays[this.text]) {
@@ -287,19 +323,19 @@ function loadScenesList() {
             usedDays[this.text] = this.value;
          }
       });
-      // set initial day to be from latest scene 
+      /* set initial day to be from latest scene */
       $('#ddDay option').each(function(){
          if ($(this).val() == latestScene.substring(23,25))
              $(this).attr('selected','selected');
       });
 
-      //console.log("Init Date Selected: " + latestScene.substring(17,25));
+      /* console.log("Init Date Selected: " + latestScene.substring(17,25)); */
 
       $('#dateConcat').html(latestScene.substring(17,25));
   
       selScene = latestScene;
       indicator = 'biomass';
-      //console.log('SET latest scene to selected scene, run map update');
+      /* console.log('SET latest scene to selected scene, run map update'); */
 
       updateMap();
 
@@ -307,12 +343,3 @@ function loadScenesList() {
 
 }
 
-
-// Remove Map Marker and Value
-function rmMarker() {
-   if (marker) {
-      $('#rasterValue').html("?");
-      map.removeLayer(marker);
-      marker = '';
-   }
-}

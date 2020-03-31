@@ -1,13 +1,18 @@
-// Set Defaults
+/* This script creates a Landsat scene map for TNC.
+ * It is used with the script map_scene_select.js
+ */
+
+/* Set Defaults */
 let url = '';
 let dMin = -9998;
 let dMax = 10000;
 let bndyColor = '#FFF';
 let opac = 0.8;
+let pp = '</table>';
 
-//-------------------------------//
-// Load geojson ranch boundaries //
-//-------------------------------//
+/*-------------------------------
+ * Load geojson ranch boundaries 
+ *-------------------------------*/
 
 var ranch;
 usrRanch = "TNC";
@@ -32,20 +37,18 @@ loadJSONFile(function(response) {
 });
 
 
-//----------------//
-// INITIALIZE MAP //
-//----------------//
+/*----------------
+ * INITIALIZE MAP 
+ *----------------*/
 
-var marker;
-
-// Basemaps
+/* Basemaps */
 var googSat = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{ maxZoom: 16, subdomains:['mt0','mt1','mt2','mt3'] });
 var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
     maxZoom: 17,
     attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
 });
 
-// Default map view
+/* Default map view */
 var map = L.map('map', {
     center: [45.6, -117.2],
     zoom: 10,
@@ -58,7 +61,7 @@ var baseLayers = {
 };
 
 
-// Custom NDVI and Biomass color scales
+/* Custom NDVI and Biomass color scales */
 plotty.addColorScale("ndvicolors",   // identifier
     ["#a50026", "#d73027", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850", "#006837"],  // color steps
     [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]);    // percentage steps
@@ -68,7 +71,7 @@ plotty.addColorScale("biomasscolors",   // identifier
     [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]);    // percentage steps
 
 
-// Show boundaries of landowner's ranch
+/* Landowner's pasture boundaries */
 var usersRanch = L.geoJson(ranch, {
    style: {
       color: bndyColor,
@@ -77,7 +80,6 @@ var usersRanch = L.geoJson(ranch, {
       fillOpacity: 0.0
    },
    onEachFeature: function(feature, layer) {
-      layer.bindPopup('<strong>Pasture: </strong>' + feature.properties.PASTURE + '<br /><strong>Hectares: </strong>' + feature.properties.Hectares + '<br /><strong>Mgmt Area: </strong>' + feature.properties.Ranch);
       layer.on({
          mouseover: function(e) {
            e.target.setStyle({
@@ -88,10 +90,15 @@ var usersRanch = L.geoJson(ranch, {
            e.target.setStyle({
              weight: 1
            });
+         },
+	 click: function() {
+           var acres = 2.471 * feature.properties.Hectares;
+           acres = acres.toFixed(2);
+           pp = "<tr><td><strong>Area: </strong></td><td>" + feature.properties.Ranch + "</td></tr><tr><td><strong>Pasture: </strong></td><td>" + feature.properties.PASTURE +  "</td></tr><tr><td><strong>Acres: </strong></td><td>" + acres + "</td></tr></table>"
          }
       });
    },
-   interactive: false  // allows map click to pass through polygon and return raster value
+   interactive: true  // false allows map click to pass through polygon and return raster value
 }).addTo(map);
 
 map.fitBounds(usersRanch.getBounds());  // zooms to user's ranch
@@ -100,73 +107,39 @@ var overlays = {
    "Pastures": usersRanch
 };
 
-// Add layer toggle controller
+/* Add layer toggle controller */
 L.control.layers(baseLayers, overlays).addTo(map);
 
-// Disable scroll wheel zoom
+/* Disable scroll wheel zoom */
 map.scrollWheelZoom.disable();
 
-// Add PRINT button
-var printer = L.easyPrint({
-   title: 'Download PNG image',
-   position: 'bottomright',
-   sizeModes: ['Current', 'A4Portrait', 'A4Landscape'],
-   filename: 'rangeSatMap',
-   exportOnly: true,
-   hideControlContainer: true,
-}).addTo(map);
 
+/*--------------------------
+ * Process on-change events 
+ *--------------------------*/
 
-//--------------------------//
-// Process on-change events //
-//--------------------------//
-
-// Update pasture boundary color
+/* Update pasture boundary color */
 $('#boundaryColor').change(function() {
    bndyColor = $(this).val();
    usersRanch.setStyle({ color: bndyColor });
 });
 
-// Adjust opacity of landsat raster
+/* Adjust opacity of landsat raster */
 $('#opacitySlider').change(function() {
    opac = $(this).val();
    opac = opac/100;
    olay.setOpacity(opac);
 });
 
-// Toggle help text
+/* Toggle help text */
 $('#q1').click(function(){
    $('#indicator-help').toggle(500);
 });
 
 
-// On map click, set lat/lon and get raster value
-map.on('click', function(e) {
-//map.on('mousemove', function(e) {
-    if (!marker) {
-        marker = L.marker([e.latlng.lat,e.latlng.lng]).addTo(map);
-    } else {
-        marker.setLatLng([e.latlng.lat,e.latlng.lng]);
-    }
-    var rasterValue = olay.getValueAtLatLng(e.latlng.lat,e.latlng.lng).toFixed(1);
-
-    if(indicator === 'ndvi' || indicator === 'nbr' || indicator === 'nbr2') {
-       rasterValue = rasterValue/10000;
-       rasterValue = rasterValue.toFixed(2);  // round to 2 decimal places
-       marker.bindPopup(indicator + ': ' + rasterValue).openPopup();
-    } else {
-       rasterValue = rasterValue * 8.92179122;  // convert biomass from g/m2 to lbs/acre
-       rasterValue = rasterValue.toFixed(0);  // round to 2 decimal places
-       marker.bindPopup(indicator + ': ' + rasterValue + ' lbs/acre').openPopup();
-    }
-    $("#rasterValue").html(rasterValue);
-
-});
-
-
-//---------------------------------//
-// UPDATE MAP with user selections //
-//---------------------------------//
+/*---------------------------------
+ * UPDATE MAP with user selections 
+ *---------------------------------*/
 
 function updateMap() {
 
@@ -206,7 +179,7 @@ function updateMap() {
       ).addTo(map).setOpacity(opac);
 
       olay.setColorScale('ndvicolors');
-      //olay.setStyle({ weight: "12" }); // attempt to fix disappearing geotiff
+      /* olay.setStyle({ weight: "12" }); // attempt to fix disappearing geotiff */
       $('#colorScaleImage').attr('src',olay.colorScaleData);
       $('#minVal').html("-1");
       $('#maxVal').html("1");
@@ -234,4 +207,43 @@ function updateMap() {
 
    $('#downloadScene').attr('href',url);
 
+
+   /* Add/update PRINT button */
+   $('.leaflet-control-easyPrint').remove();  // remove any existing print buttons
+   var printer = L.easyPrint({
+      title: 'Download PNG image',
+      position: 'bottomright',
+      sizeModes: ['Current', 'A4Portrait', 'A4Landscape'],
+      filename: 'pixelMap_' + selDate + '_tnc',
+      exportOnly: true,
+      hideControlContainer: true
+   }).addTo(map);
+
 } 
+
+/* Map click handler to build popup */
+function clickHandler(e) {
+
+  var rasterValue = olay.getValueAtLatLng(e.latlng.lat,e.latlng.lng).toFixed(1);
+
+  if(indicator === 'ndvi' || indicator === 'nbr' || indicator === 'nbr2') {
+       rasterValue = (rasterValue/10000).toFixed(2);  // round to 2 decimal places
+       if(rasterValue == -1) { rasterValue = 'N/A'; }
+  } else {
+       rasterValue = (rasterValue * 8.92179122).toFixed(0);  // convert biomass from g/m2 to lbs/acre, round to integer
+       if(rasterValue < 0) { rasterValue = 'N/A'; } else { rasterValue = rasterValue + ' lbs/acre'; }
+  }
+  $("#rasterValue").html(rasterValue);
+
+  var html = "<table class='popUpTbl'><tr class='border-bot'><td><strong>" + indicator.toUpperCase() + ":</strong></td><td>" + rasterValue + "</td></tr>" + pp;
+
+  map.openPopup(html, e.latlng, {
+    offset: L.point(0, 0)
+  });
+
+  /* Now, reset pp in case next map click is not within a pasture */
+  pp = '</table>';  
+
+}
+
+map.on('click', clickHandler);

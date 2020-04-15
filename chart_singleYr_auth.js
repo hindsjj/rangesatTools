@@ -611,12 +611,14 @@ function updateChart() {
       } 
    };
 
+   let modeBarButtons = [[ "toImage", "select2d", "lasso2d", "hoverClosestCartesian", "hoverCompareCartesian" ]];
+
    if ($('#chart .plot-container').length > 0){
       Plotly.deleteTraces('chart', 0);
       Plotly.purge('chart');
-      Plotly.newPlot('chart', data, layout, {responsive: true});
+      Plotly.newPlot('chart', data, layout, {modeBarButtons: modeBarButtons, responsive: true} );
    } else {
-      Plotly.newPlot('chart', data, layout, {responsive: true});
+      Plotly.newPlot('chart', data, layout, {modeBarButtons: modeBarButtons, responsive: true} );
    }
 
 }

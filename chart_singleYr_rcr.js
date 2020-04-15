@@ -10,10 +10,10 @@ const sym = 'single-year-monthly/';
 const sp = 'seasonal-progression/';
 const ap = 'annual-progression/';
 const apm = 'annual-progression-monthly/';
-const loc = 'Zumwalt/';
+const loc = 'SageSteppe/';
 var today = new Date();
 var ranch;
-let usrRanch ='TNC';
+let usrRanch ='RCR';
 let pasture = '';
 let measure = 'biomass';
 let measure_caps = 'Biomass';
@@ -79,7 +79,7 @@ loadJSONFile(function(response) {
    // Build Pasture Dropdown List: 
    var p_opts = '';
    for (var i = 0; i < ranch.features.length; i++) {
-      p_opts += '<option value="' + ranch.features[i].properties.PASTURE + '">' + ranch.features[i].properties.PASTURE + '</option>';
+      p_opts += '<option value="' + ranch.features[i].properties.Pasture + '">' + ranch.features[i].properties.Pasture + '</option>';
    }
    $('#ddPasture').append(p_opts);
 
@@ -102,9 +102,9 @@ loadJSONFile(function(response) {
 // Build Date Dropdowns //
 //----------------------//
 
-// Years, beginning 1982
-//for (i = new Date().getFullYear(); i > 1981; i--) {
-for (i = 2019; i > 1981; i--) {
+// Years, beginning 1999
+//for (i = new Date().getFullYear(); i > 1998; i--) {
+for (i = 2019; i > 1998; i--) {
    $('#ddYear').append($('<option />').val(i).html(i));
 }
 $("#ddYear option:eq(0)").attr('selected','selected');
@@ -587,7 +587,7 @@ function updateChart() {
             }
           },
           hoverformat: '.0f',
-	  rangemode: 'nonnegative'
+          rangemode: 'nonnegative'
           //range: ['' + yr + '-03-01', '' + yr + '-11-15']
        },
        yaxis2: {

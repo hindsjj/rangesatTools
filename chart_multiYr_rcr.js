@@ -5,15 +5,15 @@ const baseUrl = 'https://rangesat.nkn.uidaho.edu/api/';
 const geoj = 'geojson/';
 const ps = 'pasturestats/'
 const multYr = 'multi-year/';
-const loc = 'Zumwalt/';
+const loc = 'SageSteppe/';
 var ranch;
-let usrRanch ='TNC';
+let usrRanch ='RCR';
 let pasture = '';
 let measure = 'biomass_mean_gpm';
 let measureTxt = 'Biomass';
 let varId = '';
 let varVal = '';
-let yr1 = '1984';
+let yr1 = '1999';
 let yr2 = '2019';
 let mm1 = '05';
 let mm2 = '07';
@@ -63,7 +63,7 @@ loadJSONFile(function(response) {
    // Build Pasture Dropdown List: 
    var p_opts = '';
    for (var i = 0; i < ranch.features.length; i++) {
-      p_opts += '<option value="' + ranch.features[i].properties.PASTURE + '">' + ranch.features[i].properties.PASTURE + '</option>';
+      p_opts += '<option value="' + ranch.features[i].properties.Pasture + '">' + ranch.features[i].properties.Pasture + '</option>';
    }
    $('#ddPasture').append(p_opts);
 
@@ -86,9 +86,9 @@ loadJSONFile(function(response) {
 // Build Date Dropdowns //
 //----------------------//
 
-// Years, beginning 1984
-//for (i = new Date().getFullYear(); i > 1983; i--) {
-for (i = 2019; i > 1983; i--) {
+// Years, beginning 1999
+//for (i = new Date().getFullYear(); i > 1998; i--) {
+for (i = 2019; i > 1998; i--) {
    $('#ddMultYr1, #ddMultYr2').append($('<option />').val(i).html(i));
 }
 $("#ddMultYr1 option:last").attr('selected','selected');

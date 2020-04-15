@@ -14,7 +14,7 @@ let measureTxt = 'Biomass';
 let varId = '';
 let varVal = '';
 let yr1 = '1984';
-let yr2 = '2018';
+let yr2 = '2019';
 let mm1 = '05';
 let mm2 = '07';
 let dd1 = '15';
@@ -97,7 +97,7 @@ for (i = 2019; i > 1983; i--) {
    $('#ddMultYr1, #ddMultYr2').append($('<option />').val(i).html(i));
 }
 $("#ddMultYr1 option:last").attr('selected','selected');
-$("#ddMultYr2 option:eq(1)").attr('selected','selected');
+$("#ddMultYr2 option:eq(0)").attr('selected','selected');
 
 // Months
 var mTxt = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -358,12 +358,14 @@ function multYrFunc(arr) {
       }
    };
 
+   let modeBarButtons = [[ "toImage", "select2d", "lasso2d", "hoverClosestCartesian", "hoverCompareCartesian" ]];
+
    if ($('#chart .plot-container').length > 0){
       Plotly.deleteTraces('chart', 0);
       Plotly.purge('chart');
-      Plotly.newPlot('chart', data, layout);
+      Plotly.newPlot('chart', data, layout, {modeBarButtons: modeBarButtons, responsive: true} );
    } else {
-      Plotly.newPlot('chart', data, layout);
+      Plotly.newPlot('chart', data, layout, {modeBarButtons: modeBarButtons, responsive: true} );
    }
 
 }

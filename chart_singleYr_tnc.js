@@ -1,7 +1,7 @@
 // Define variables
 // Set defaults
 
-const baseUrl = 'https://rangesat.nkn.uidaho.edu/api/'; 
+const baseUrl = 'https://rangesat.org/api/'; 
 const geoj = 'geojson/';
 const gmet = 'gridmet/';
 const ps = 'pasturestats/'
@@ -104,10 +104,10 @@ loadJSONFile(function(response) {
 
 // Years, beginning 1982
 //for (i = new Date().getFullYear(); i > 1981; i--) {
-for (i = 2019; i > 1981; i--) {
+for (i = 2020; i > 1981; i--) {
    $('#ddYear').append($('<option />').val(i).html(i));
 }
-$("#ddYear option:eq(0)").attr('selected','selected');
+$("#ddYear option:eq(1)").attr('selected','selected');
 
 
 //-----------------------------//

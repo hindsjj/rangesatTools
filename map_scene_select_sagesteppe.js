@@ -197,7 +197,7 @@ $('select').change(function() {
 /* Use CALLBACK approach */
 const latestLandsat = callback => {
 
-   fetch('https://rangesat.nkn.uidaho.edu/api/scenemeta/SageSteppe/?pasture_coverage_threshold=0.5&filter=latest')
+   fetch('https://rangesat.org/api/scenemeta/SageSteppe/?pasture_coverage_threshold=0.5&filter=latest')
       .then(response => {
          return response.json()
       })
@@ -226,7 +226,7 @@ latestLandsat(initScene => {
 function loadScenesList() {
 
    /* This url contains names of scenes in SageSteppe */
-   const url_scenes = 'https://rangesat.nkn.uidaho.edu/api/scenemeta/SageSteppe/?pasture_coverage_threshold=0.5';
+   const url_scenes = 'https://rangesat.org/api/scenemeta/SageSteppe/?pasture_coverage_threshold=0.5';
 
    /* Populate dropdown with list of scenes */
    $.getJSON(url_scenes, function (data) {

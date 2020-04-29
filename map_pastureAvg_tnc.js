@@ -9,7 +9,7 @@ let yr = 2019;
 let mm1 = 5;
 let mm2 = 5;
 let mo1 = 'May';
-let mo2 = '';
+let mo2 = ''; 
 let pasture = [];
 let biomass_mean = [];
 var xmlhttp = new XMLHttpRequest();
@@ -23,10 +23,10 @@ let tbl = '';
 
 // Years, beginning 1982
 //for (var i = new Date().getFullYear(); i > 1981; i--) {
-for (var i = 2019; i > 1981; i--) {
+for (var i = 2020; i > 1981; i--) {
   $('#ddYear').append($('<option />').val(i).html(i));
 }
-$("#ddYear option:eq(0)").attr('selected','selected');
+$("#ddYear option:eq(1)").attr('selected','selected');
 
 // Months
 var mTxt = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -42,6 +42,10 @@ $("#ddMonth option:eq(4)").attr('selected','selected');
 //-----------------------------//
 // Process on-change events    //
 // ----------------------------//
+
+$('#dl').click(function() {
+   $('.tblPastureAvg table').table2csv(); // CSV download button
+});
 
 $('#ddYear').change(function() {
    yr = $(this).val();
@@ -153,7 +157,7 @@ function loadJSONFile(callback) {
 
     var xmlobj = new XMLHttpRequest();
     xmlobj.overrideMimeType("application/json");
-    xmlobj.open('GET', 'https://rangesat.nkn.uidaho.edu/api/geojson/Zumwalt/' + usrRanch, false); // Change true to false for synchronous loading.
+    xmlobj.open('GET', 'https://rangesat.org/api/geojson/Zumwalt/' + usrRanch, false); // Change true to false for synchronous loading.
     xmlobj.onreadystatechange = function () {
           if (xmlobj.readyState == 4 && xmlobj.status == "200") {
             // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
@@ -240,7 +244,7 @@ getPastureStats();
 
 function getPastureStats() {
 
-  url = 'https://rangesat.nkn.uidaho.edu/api/pasturestats/intra-year/Zumwalt/?year=' + yr + '&start_date=' + mm1 + '-1&end_date=' + mm2 + '-' + dayEnd + '&ranch=TNC';
+  url = 'https://rangesat.org/api/pasturestats/intra-year/Zumwalt/?year=' + yr + '&start_date=' + mm1 + '-1&end_date=' + mm2 + '-' + dayEnd + '&ranch=TNC';
   //console.log('TEST: ' + url);
 
   xmlhttp.onreadystatechange = function() {

@@ -1,7 +1,7 @@
 // Define variables
 // Set defaults
 
-const baseUrl = 'https://rangesat.nkn.uidaho.edu/api/'; 
+const baseUrl = 'https://rangesat.org/api/'; 
 const geoj = 'geojson/';
 const ps = 'pasturestats/'
 const multYr = 'multi-year/';
@@ -13,7 +13,7 @@ let measure = 'biomass_mean_gpm';
 let measureTxt = 'Biomass';
 let varId = '';
 let varVal = '';
-let yr1 = '1999';
+let yr1 = '1984';
 let yr2 = '2019';
 let mm1 = '05';
 let mm2 = '07';
@@ -88,11 +88,11 @@ loadJSONFile(function(response) {
 
 // Years, beginning 1999
 //for (i = new Date().getFullYear(); i > 1998; i--) {
-for (i = 2019; i > 1998; i--) {
+for (i = 2020; i > 1983; i--) {
    $('#ddMultYr1, #ddMultYr2').append($('<option />').val(i).html(i));
 }
 $("#ddMultYr1 option:last").attr('selected','selected');
-$("#ddMultYr2 option:eq(0)").attr('selected','selected');
+$("#ddMultYr2 option:eq(1)").attr('selected','selected');
 
 // Months
 var mTxt = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -184,7 +184,8 @@ function updateChart() {
 
    // Construct api endpoint URL
    url = baseUrl + ps + multYr + loc + "?ranch=" + usrRanch + "&pasture=" + escape(pasture) + "&start_year=" + yr1 + "&end_year=" + yr2 + "&start_date=" + mm1 + "-" + dd1 + "&end_date=" + mm2 + "-" + dd2 + "&agg_func=" + stat;
-   urlDL = url + '&csv=True';
+   //urlDL = url + '&csv=True';
+   urlDL = url + '&units=en&drop=ndvi_mean;ndvi_sd;ndvi_10pct;ndvi_75pct;ndvi_90pct;ndvi_ci90;nbr_sd;nbr_mean;nbr_10pct;nbr_75pct;nbr_90pct;nbr_ci90;nbr2_mean;nbr2_sd;nbr2_10pct;nbr2_75pct;nbr2_90pct;nbr2_ci90;summer_vi_mean_gpm;fall_vi_mean_gpm&csv=True';
 
    $('#csv').attr('href',urlDL);
 

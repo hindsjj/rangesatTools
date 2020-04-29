@@ -21,7 +21,7 @@ function loadJSONFile(callback) {
 
     var xmlobj = new XMLHttpRequest();
     xmlobj.overrideMimeType("application/json");
-    xmlobj.open('GET', 'https://rangesat.nkn.uidaho.edu/api/geojson/SageSteppe/' + usrRanch, false); // Change true to false for synchronous loading.
+    xmlobj.open('GET', 'https://rangesat.org/api/geojson/SageSteppe/' + usrRanch, false); // Change true to false for synchronous loading.
     xmlobj.onreadystatechange = function () {
           if (xmlobj.readyState == 4 && xmlobj.status == "200") {
             // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
@@ -166,7 +166,7 @@ function updateMap() {
    if(indicator === 'ndvi' || indicator === 'nbr' || indicator === 'nbr2') {
 
       olay = L.leafletGeotiff( 
-         url='https://rangesat.nkn.uidaho.edu/api/raster/SageSteppe/' + selScene + '/' + indicator + '/',
+         url='https://rangesat.org/api/raster/SageSteppe/' + selScene + '/' + indicator + '/',
          options={ band: 0,
                 name: 'NDVI',
                 displayMin: dMin,
@@ -186,7 +186,7 @@ function updateMap() {
    } else {
 
       olay = L.leafletGeotiff(
-         url="https://rangesat.nkn.uidaho.edu/api/raster/SageSteppe/" + selScene + "/" + indicator + "/?ranches=['" + usrRanch + "']",
+         url="https://rangesat.org/api/raster/SageSteppe/" + selScene + "/" + indicator + "/?ranches=['" + usrRanch + "']",
          options={ band: 0,
                 name: 'BIOMASS',
                 displayMin: 2,
@@ -211,7 +211,7 @@ function updateMap() {
    $('.leaflet-control-easyPrint').remove();  // remove any existing print buttons
    var printer = L.easyPrint({
       title: 'Download PNG image',
-      position: 'bottomright',
+      position: 'topleft',
       sizeModes: ['Current', 'A4Portrait', 'A4Landscape'],
       filename: 'pixelMap_' + selDate + '_tnc',
       exportOnly: true,

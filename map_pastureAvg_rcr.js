@@ -298,7 +298,7 @@ function updateMap(arr) {
       var acres = feature.properties.GIS_acres.toFixed(2);
       layerName = feature.properties.Pasture;
 
-      layer.bindPopup('<table class="popUpTbl"><tr class="border-bot"><td><strong>BIOMASS: </strong></td><td>' + pastureBiomass + ' lbs/acre</td></tr><tr><td><strong>Owner: </strong></td><td>' + feature.properties.Ownership + '</td></tr><tr><td><strong>Pasture: </strong></td><td>' + feature.properties.Pasture + '</td></tr><tr><td><strong>Acres: </strong></td><td>' + acres + '</td></tr></table>');
+      layer.bindPopup('<table class="popUpTbl"><tr class="border-bot"><td><strong>BIOMASS: </strong></td><td>' + pastureBiomass + ' lbs/acre</td></tr><tr><td><strong>Pasture: </strong></td><td>' + feature.properties.Pasture + '</td></tr><tr><td><strong>Acres: </strong></td><td>' + acres + '</td></tr></table>');
 
       layer.on({
         mouseover: function(e) {

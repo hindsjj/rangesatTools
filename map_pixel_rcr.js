@@ -112,6 +112,53 @@ L.control.layers(baseLayers, overlays).addTo(map);
 /* Disable scroll wheel zoom */
 map.scrollWheelZoom.disable();
 
+/* Map title box */
+var info = L.control( { position: 'bottomleft' });
+
+info.onAdd = function (map) {
+   this._div = L.DomUtil.create('div', 'info');
+   this.update();
+   return this._div;
+};
+
+info.update = function () {
+   this._div.innerHTML = '<div style="background:#fff;opacity:0.7;border-radius:6px;padding:4px 6px"><h4>Rock Creek Ranch</h4><span style="font-size:14px"><strong>' + indicator.toUpperCase() + ', ' + selScene.substring(21,23) + '/' + selScene.substring(23,25) + '/' +  selScene.substring(17,21) + '</strong></span></div>';
+};
+
+info.addTo(map);
+
+/* Map Legend */
+var legend = L.control({position: 'bottomright'});
+
+legend.onAdd = function (map) {
+   this._div = L.DomUtil.create('div', 'info legend');
+   this.update();
+   return this._div;
+};
+
+legend.update = function () {
+
+   if(indicator === 'ndvi') {
+       grades = ['-1', '-0.8', '-0.6', '-0.4', '-0.2', '0', '0.2', '0.4', '0.6', '0.8', '1'];
+       avgColors = ["#a50026", "#d73027", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850", "#006837"];
+       units = '';
+   } else { // biomass
+       grades = ['0', '250', '500', '750', '1000', '1250', '1500', '1750', '2000', '2250', '2500'];
+       avgColors = ["#9e0142", "#d53e4f", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#e6f598", "#abdda4", "#66c2a5", "#3288bd", "#5e4fa2"];  
+       units = '<br>(lbs/acre)';
+   }
+ 
+   labels = [];
+
+   for (var i = 0; i < grades.length; i++) {
+        labels.push( '&nbsp;<span style="opacity:0.8;background-color:' + avgColors[i] + '">&nbsp;&nbsp;&nbsp;&nbsp;</span> ' + grades[i] );
+   }
+
+   this._div.innerHTML = '<div style="background:#fff;opacity:0.8;border-radius:6px;padding:4px 6px">' + indicator.toUpperCase() + units + '<br>' + labels.join('<br>') + '</div>';
+};
+
+legend.addTo(map);
+
 
 /*--------------------------
  * Process on-change events 
@@ -218,6 +265,9 @@ function updateMap() {
       hideControlContainer: true
    }).addTo(map);
 
+   /* Update map title and legend */
+   info.update();
+   legend.update();
 } 
 
 /* Map click handler to build popup */

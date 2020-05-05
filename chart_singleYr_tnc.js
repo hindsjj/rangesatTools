@@ -464,13 +464,13 @@ function updateChart() {
         y: my_climVar,
         type: 'bar',
         yaxis: 'y2',
+        opacity: 0.6,
         name: 'Monthly ' + sy_label_short + ' Normals',
         text: '30yr Normal ' + sy_label_short,
         hoverinfo: 'text+y',
         marker: {
           //color: 'lightskyblue',
-          color: climColorMy,
-          opacity: 0.6
+          color: climColorMy
         }
       },
       {
@@ -479,13 +479,13 @@ function updateChart() {
         y: sy_climVar,
         type: 'bar',
         yaxis: 'y2',
+        opacity: 0.4,
         name: 'Monthly ' + sy_label_short + ' ' + yr,
         text: sy_label_short,
         hoverinfo: 'text+y',
         marker: {
           //color: 'cyan',
-          color: climColorSy,
-          opacity: 0.5
+          color: climColorSy
         }
       },
       {
@@ -510,7 +510,7 @@ function updateChart() {
         type: 'scatter',
         mode: 'lines',
         fill: 'tonexty',
-        fillcolor: 'rgba(200,200,200,0.3)',
+        fillcolor: 'rgba(200,200,200,0.4)',
         //fillcolor: '#F0F8FF',
         name: 'Normal 80th percentile',
         text: '80th percentile',
@@ -555,8 +555,11 @@ function updateChart() {
           t: 80
        },
        legend: {
-          x: 0.65,
-          y: 0.95,
+       //   x: 0.71,
+       //   y: 0.96,
+          x: 1.0,
+	  xanchor: 'right',
+          y: 1.02,
           bgcolor: 'rgba(255,255,255,0.5)'
        },
        title: {

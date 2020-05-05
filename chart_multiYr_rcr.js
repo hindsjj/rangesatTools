@@ -5,6 +5,7 @@ const baseUrl = 'https://rangesat.org/api/';
 const geoj = 'geojson/';
 const ps = 'pasturestats/'
 const multYr = 'multi-year/';
+const interYr = 'inter-year/';
 const loc = 'SageSteppe/';
 var ranch;
 let usrRanch ='RCR';
@@ -34,6 +35,7 @@ let barcolorBelow = [];
 var xmlhttp = new XMLHttpRequest();
 let url ='';
 let urlDL ='';
+let urlDL2 ='';
 
 //------------------------------//
 // Load landowner pasture names //
@@ -184,10 +186,11 @@ function updateChart() {
 
    // Construct api endpoint URL
    url = baseUrl + ps + multYr + loc + "?ranch=" + usrRanch + "&pasture=" + escape(pasture) + "&start_year=" + yr1 + "&end_year=" + yr2 + "&start_date=" + mm1 + "-" + dd1 + "&end_date=" + mm2 + "-" + dd2 + "&agg_func=" + stat;
-   //urlDL = url + '&csv=True';
    urlDL = url + '&units=en&drop=ndvi_mean;ndvi_sd;ndvi_10pct;ndvi_75pct;ndvi_90pct;ndvi_ci90;nbr_sd;nbr_mean;nbr_10pct;nbr_75pct;nbr_90pct;nbr_ci90;nbr2_mean;nbr2_sd;nbr2_10pct;nbr2_75pct;nbr2_90pct;nbr2_ci90;summer_vi_mean_gpm;fall_vi_mean_gpm&csv=True';
+   urlDL2 = baseUrl + ps + interYr + loc + "?ranch=" + usrRanch + "&start_year=" + yr1 + "&end_year=" + yr2 + "&start_date=" + mm1 + "-" + dd1 + "&end_date=" + mm2 + "-" + dd2 + "&units=en&drop=ndvi_mean;ndvi_sd;ndvi_10pct;ndvi_75pct;ndvi_90pct;ndvi_ci90;nbr_sd;nbr_mean;nbr_10pct;nbr_75pct;nbr_90pct;nbr_ci90;nbr2_mean;nbr2_sd;nbr2_10pct;nbr2_75pct;nbr2_90pct;nbr2_ci90;summer_vi_mean_gpm;fall_vi_mean_gpm&csv=True";
 
-   $('#csv').attr('href',urlDL);
+   $('#csv1').attr('href',urlDL);
+   $('#csv2').attr('href',urlDL2);
 
    xmlhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
@@ -316,9 +319,11 @@ function multYrFunc(arr) {
           t: 80
       }, 
       legend: {
-        x: 0.8,
-        y: 1.0,
-        bgcolor: 'rgba(255,255,255,0.5)'
+        x: 1,
+	xanchor: 'right',
+        y: 1.02,
+        bgcolor: 'rgba(255,255,255,0.5)',
+ 	orientation: 'h'
       },
       title: { 
         text: '' + statCaps + ' ' + measureTxt + ' over season: ' + mm1 + '-' + dd1 + ' to ' + mm2 + '-' + dd2 + '<br />Landowner: ' + usrRanch + ', Pasture: ' + pasture, 

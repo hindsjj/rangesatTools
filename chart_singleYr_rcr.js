@@ -370,7 +370,7 @@ updateStats();  // on initial page load
 function updateStats() {
 
    url = baseUrl + ps + sym + loc + "?ranch=" + usrRanch + "&pasture=" + escape(pasture) + "&year=" + yr;
-   urlDL = url + '&csv=True';
+   urlDL = url + '&units=en&drop=nbr2_10pct;nbr2_75pct;nbr2_90pct;nbr2_ci90;nbr2_mean;nbr2_sd;nbr_10pct;nbr_75pct;nbr_90pct;nbr_ci90;nbr_mean;nbr_sd&csv=True';
 
    $('#csv').attr('href',urlDL);
    $('#csvYr').html(yr);

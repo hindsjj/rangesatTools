@@ -8,7 +8,7 @@ const multYr = 'multi-year/';
 const interYr = 'inter-year/';
 const loc = 'SageSteppe/';
 var ranch;
-let usrRanch ='RCR';
+let usrRanch ='Rinker_Rock_Creek_Ranch';
 let pasture = '';
 let measure = 'biomass_mean_gpm';
 let measureTxt = 'Biomass';
@@ -46,7 +46,7 @@ function loadJSONFile(callback) {
 
    var xmlobj = new XMLHttpRequest();
    xmlobj.overrideMimeType('application/json');
-   xmlobj.open('GET', baseUrl + geoj + loc + usrRanch, false); // change true to false for syncronous loading
+   xmlobj.open('GET', baseUrl + 'location/' + loc + usrRanch, false); // change true to false for syncronous loading
    xmlobj.onreadystatechange = function () {
      if (xmlobj.readyState == 4 && xmlobj.status == "200") {
         // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
@@ -64,8 +64,8 @@ loadJSONFile(function(response) {
 
    // Build Pasture Dropdown List: 
    var p_opts = '';
-   for (var i = 0; i < ranch.features.length; i++) {
-      p_opts += '<option value="' + ranch.features[i].properties.Pasture + '">' + ranch.features[i].properties.Pasture + '</option>';
+   for (var i = 0; i < ranch.pastures.length; i++) {
+      p_opts += '<option value="' + ranch.pastures[i] + '">' + ranch.pastures[i] + '</option>';
    }
    $('#ddPasture').append(p_opts);
 
@@ -326,7 +326,7 @@ function multYrFunc(arr) {
  	orientation: 'h'
       },
       title: { 
-        text: '' + statCaps + ' ' + measureTxt + ' over season: ' + mm1 + '-' + dd1 + ' to ' + mm2 + '-' + dd2 + '<br />Landowner: ' + usrRanch + ', Pasture: ' + pasture, 
+        text: '' + statCaps + ' ' + measureTxt + ' over season: ' + mm1 + '-' + dd1 + ' to ' + mm2 + '-' + dd2 + '<br />' + usrRanch + ', Pasture: ' + pasture, 
         font: { 
          // family: 'Arial', 
           size: 18 

@@ -563,7 +563,7 @@ function updateChart() {
           bgcolor: 'rgba(255,255,255,0.5)'
        },
        title: {
-          text: '' + measure_caps + '<br />Landowner: ' + usrRanch + ', Pasture: ' + pasture,
+          text: '' + measure_caps + '<br />' + usrRanch + ', Pasture: ' + pasture,
           font: {
             family: 'Arial',
             size: 18

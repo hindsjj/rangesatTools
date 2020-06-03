@@ -151,7 +151,7 @@ $('#opacitySlider').change(function() {
 //-------------------------------//
 
 let ranch;
-usrRanch = 'RCR';
+let usrRanch = 'Rinker_Rock_Creek_Ranch';
 
 function loadJSONFile(callback) {   
 
@@ -224,8 +224,11 @@ map.scrollWheelZoom.disable();
   legend.onAdd = function (map) {
 
         var div = L.DomUtil.create('div', 'info legend'),
-                grades = ['>2000', '1750-2000', '1500-1750', '1250-1500', '1000-1250', '750-1000', '500-750', '<500'],
-                avgColors = ['dodgerblue','cyan','lime','greenyellow','yellow','orange','coral','red'],
+                //grades = ['>2000', '1750-2000', '1500-1750', '1250-1500', '1000-1250', '750-1000', '500-750', '<500'],
+                /* grades = ['>1800', '1200-1800', '800-1200', '600-800', '500-600', '400-500', '300-400', '<300'],
+                avgColors = ['dodgerblue','cyan','lime','greenyellow','yellow','orange','coral','red'], */
+		grades = ['>900', '800-900', '700-800', '600-700', '500-600', '400-500', '300-400', '200-300', '100-200', '<100'];
+		avgColors = ['darkblue', 'dodgerblue', 'cyan', 'lime', 'greenyellow', 'yellow', 'orange', 'coral', 'red', 'darkred'];
                 labels = [];
 
         for (var i = 0; i < grades.length; i++) {
@@ -244,8 +247,8 @@ getPastureStats();
 
 function getPastureStats() {
 
-  url = 'https://rangesat.org/api/pasturestats/intra-year/SageSteppe/?year=' + yr + '&start_date=' + mm1 + '-1&end_date=' + mm2 + '-' + dayEnd + '&ranch=RCR';
-  //console.log('TEST: ' + url);
+  url = 'https://rangesat.org/api/pasturestats/intra-year/SageSteppe/?year=' + yr + '&start_date=' + mm1 + '-1&end_date=' + mm2 + '-' + dayEnd + '&ranch=' + usrRanch;
+  console.log('TEST: ' + url);
 
   xmlhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
@@ -276,10 +279,32 @@ function updateMap(arr) {
     onEachFeature: function(feature, layer) {
 
       for(var i = 0; i < arr.length; i++) {
-        if (arr[i].pasture == feature.properties.Pasture) {
-          arr[i].biomass_mean_gpm = arr[i].biomass_mean_gpm * 8.92179122; // convert gpm to lbs/acre
-          var pastureBiomass = arr[i].biomass_mean_gpm;
+        if (arr[i].pasture == feature.properties.PASTURE) {
+          arr[i].biomass_mean_lbac = arr[i].biomass_mean_gpm * 8.92179122; // convert gpm to lbs/acre
+          var pastureBiomass = arr[i].biomass_mean_lbac;
 	  pastureBiomass = pastureBiomass.toFixed(0);
+
+          if(pastureBiomass < 100) { varColor = 'darkred'; }
+          if(pastureBiomass >= 100 && pastureBiomass < 200) { varColor = 'red'; }
+          if(pastureBiomass >= 200 && pastureBiomass < 300) { varColor = 'coral'; }
+          if(pastureBiomass >= 300 && pastureBiomass < 400) { varColor = 'orange'; }
+          if(pastureBiomass >= 400 && pastureBiomass < 500) { varColor = 'yellow'; }
+          if(pastureBiomass >= 500 && pastureBiomass < 600) { varColor = 'greenyellow'; }
+          if(pastureBiomass >= 600 && pastureBiomass < 700) { varColor = 'lime'; }
+          if(pastureBiomass >= 700 && pastureBiomass < 800) { varColor = 'cyan'; }
+          if(pastureBiomass >= 800 && pastureBiomass < 900) { varColor = 'dodgerblue'; }
+          if(pastureBiomass >= 900) { varColor = 'darkblue'; }
+/*
+          if(pastureBiomass < 300) { varColor = 'red'; }
+          if(pastureBiomass >= 300 && pastureBiomass < 400) { varColor = 'coral'; }
+          if(pastureBiomass >= 400 && pastureBiomass < 500) { varColor = 'orange'; }
+          if(pastureBiomass >= 500 && pastureBiomass < 600) { varColor = 'yellow'; }
+          if(pastureBiomass >= 600 && pastureBiomass < 800) { varColor = 'greenyellow'; }
+          if(pastureBiomass >= 800 && pastureBiomass < 1200) { varColor = 'lime'; }
+          if(pastureBiomass >= 1200 && pastureBiomass < 1800) { varColor = 'cyan'; }
+          if(pastureBiomass >= 1800) { varColor = 'dodgerblue'; }
+*/
+/*
           if(pastureBiomass < 500) { varColor = 'red'; }
           if(pastureBiomass >= 500 && pastureBiomass < 750) { varColor = 'coral'; }
           if(pastureBiomass >= 750 && pastureBiomass < 1000) { varColor = 'orange'; }
@@ -288,17 +313,17 @@ function updateMap(arr) {
           if(pastureBiomass >= 1500 && pastureBiomass < 1750) { varColor = 'lime'; }
           if(pastureBiomass >= 1750 && pastureBiomass < 2000) { varColor = 'cyan'; }
           if(pastureBiomass >= 2000) { varColor = 'dodgerblue'; }
-
+*/
 	  layer.setStyle({ color: varColor });
 
-	  tbl = tbl + '<tr><td>' + yr + '-' + mo1 + mo2 + '</td><td>RCR</td><td>' + arr[i].pasture + '</td><td>' + (feature.properties.GIS_acres * 2.471).toFixed(2) + '</td><td>' + (arr[i].biomass_mean_gpm).toFixed(0) + '</td></tr>'; 
+	  tbl = tbl + '<tr><td>' + yr + '-' + mo1 + mo2 + '</td><td>RRCR</td><td>' + arr[i].pasture + '</td><td>' + (feature.properties.Acres).toFixed(2) + '</td><td>' + (arr[i].biomass_mean_lbac).toFixed(0) + '</td></tr>'; 
 	}
       }
 
-      var acres = feature.properties.GIS_acres.toFixed(2);
-      layerName = feature.properties.Pasture;
+      var acres = feature.properties.Acres.toFixed(2);
+      layerName = feature.properties.PASTURE;
 
-      layer.bindPopup('<table class="popUpTbl"><tr class="border-bot"><td><strong>BIOMASS: </strong></td><td>' + pastureBiomass + ' lbs/acre</td></tr><tr><td><strong>Pasture: </strong></td><td>' + feature.properties.Pasture + '</td></tr><tr><td><strong>Acres: </strong></td><td>' + acres + '</td></tr></table>');
+      layer.bindPopup('<table class="popUpTbl"><tr class="border-bot"><td><strong>BIOMASS: </strong></td><td>' + pastureBiomass + ' lbs/acre</td></tr><tr><td><strong>Pasture: </strong></td><td>' + feature.properties.PASTURE + '</td></tr><tr><td><strong>Acres: </strong></td><td>' + acres + '</td></tr></table>');
 
       layer.on({
         mouseover: function(e) {
@@ -326,7 +351,7 @@ function updateMap(arr) {
      position: 'topleft',
      //sizeModes: ['Current', 'A4Portrait', 'A4Landscape'],
      sizeModes: ['Current'],
-     filename: 'pastureAvg_' + yr + '_' + mo1 + mo2 + '_RCR',
+     filename: 'pastureAvg_' + yr + '_' + mo1 + mo2 + '_RRCR',
      exportOnly: true,
      hideControlContainer: false
   }).addTo(map);

@@ -5,10 +5,10 @@ const baseUrl = 'https://rangesat.org/api/';
 const geoj = 'geojson/';
 const gmet = 'gridmet/';
 const ps = 'pasturestats/'
-const sy = 'single-year/';
+//const sy = 'single-year/';
 const sym = 'single-year-monthly/';
 const sp = 'seasonal-progression/';
-const ap = 'annual-progression/';
+//const ap = 'annual-progression/';
 const apm = 'annual-progression-monthly/';
 const loc = 'Zumwalt/';
 var today = new Date();
@@ -574,7 +574,7 @@ function updateChart() {
         bgcolor: 'rgba(255,255,255,0.5)'
       },
       title: {
-        text: '' + measure_caps + '<br />Landowner: ' + usrRanch + ', Pasture: ' + pasture,
+        text: '' + measure_caps + '<br />' + usrRanch + ', Pasture: ' + pasture,
         font: {
           family: 'Arial',
           size: 18

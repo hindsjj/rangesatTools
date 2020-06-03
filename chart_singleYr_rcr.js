@@ -13,7 +13,7 @@ const apm = 'annual-progression-monthly/';
 const loc = 'SageSteppe/';
 var today = new Date();
 var ranch;
-let usrRanch ='RCR';
+let usrRanch ='Rinker_Rock_Creek_Ranch';
 let pasture = '';
 let measure = 'biomass';
 let measure_caps = 'Biomass';
@@ -59,7 +59,7 @@ function loadJSONFile(callback) {
 
    var xmlobj = new XMLHttpRequest();
    xmlobj.overrideMimeType('application/json');
-   xmlobj.open('GET', baseUrl + geoj + loc + usrRanch, false); // change true to false for syncronous loading
+   xmlobj.open('GET', baseUrl + 'location/' + loc + usrRanch, false); // change true to false for syncronous loading
    xmlobj.onreadystatechange = function () {
       if (xmlobj.readyState == 4 && xmlobj.status == "200") {
          // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
@@ -78,8 +78,8 @@ loadJSONFile(function(response) {
 
    // Build Pasture Dropdown List: 
    var p_opts = '';
-   for (var i = 0; i < ranch.features.length; i++) {
-      p_opts += '<option value="' + ranch.features[i].properties.Pasture + '">' + ranch.features[i].properties.Pasture + '</option>';
+   for (var i = 0; i < ranch.pastures.length; i++) {
+      p_opts += '<option value="' + ranch.pastures[i] + '">' + ranch.pastures[i] + '</option>';
    }
    $('#ddPasture').append(p_opts);
 
@@ -175,11 +175,11 @@ updateGridmet();  // on initial page load
 function updateGridmet() {
 
    // Single Year Monthly: gridmet monthly-aggregated data for selected year
-   gmetUrlSy = baseUrl + gmet + sym + loc + usrRanch + "/" + escape(pasture) + "/?year=" + yr + "&units=English";
+   gmetUrlSy = baseUrl + gmet + sym + loc + usrRanch + "/" + escape(pasture) + "/?year=" + yr + "&units=en";
    //console.log('gridmet URL sym: ' + gmetUrlSy);
 
    // Annual Progression Monthly: gridmet monthly-aggregated data for multiple years
-   gmetUrlMy = baseUrl + gmet + apm + loc + usrRanch + "/" + escape(pasture) + "/?year=" + yr + "&units=English";
+   gmetUrlMy = baseUrl + gmet + apm + loc + usrRanch + "/" + escape(pasture) + "/?year=" + yr + "&units=en";
    //console.log('gridmet URL apm: ' + gmetUrlMy);
 
    xmlhttp1.onreadystatechange = function() {
@@ -282,7 +282,7 @@ function updateSeasonProg() {
 
    // seasonal progression data for selected year
    spUrl = baseUrl + ps + sp + loc + "?ranch=" + usrRanch + "&pasture=" + escape(pasture);
-   //console.log('Seasonal Prog URL: ' + spUrl);
+   console.log('Seasonal Prog URL: ' + spUrl);
 
    xmlhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
@@ -561,7 +561,7 @@ function updateChart() {
           bgcolor: 'rgba(255,255,255,0.5)'
        },
        title: {
-          text: '' + measure_caps + '<br />Landowner: ' + usrRanch + ', Pasture: ' + pasture,
+          text: '' + measure_caps + '<br />' + usrRanch + ', Pasture: ' + pasture,
           font: {
             family: 'Arial',
             size: 18

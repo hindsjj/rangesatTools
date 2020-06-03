@@ -336,7 +336,7 @@ function multYrFunc(arr) {
         orientation: 'h'
       },
       title: { 
-        text: '' + statCaps + ' ' + measureTxt + ' over season: ' + mm1 + '-' + dd1 + ' to ' + mm2 + '-' + dd2 + '<br />Landowner: ' + usrRanch + ', Pasture: ' + pasture, 
+        text: '' + statCaps + ' ' + measureTxt + ' over season: ' + mm1 + '-' + dd1 + ' to ' + mm2 + '-' + dd2 + '<br />' + usrRanch + ', Pasture: ' + pasture, 
         font: { 
          // family: 'Arial', 
           size: 18 

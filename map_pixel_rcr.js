@@ -15,7 +15,7 @@ let pp = '</table>';
  *-------------------------------*/
 
 var ranch;
-usrRanch = "RCR";
+usrRanch = "Rinker_Rock_Creek_Ranch";
 
 function loadJSONFile(callback) {   
 
@@ -69,6 +69,10 @@ plotty.addColorScale("ndvicolors",   // identifier
 plotty.addColorScale("biomasscolors",   // identifier
     ["#9e0142", "#d53e4f", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#e6f598", "#abdda4", "#66c2a5", "#3288bd", "#5e4fa2"],  // color steps
     [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]);    // percentage steps
+    //[0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.7, 0.9, 1.0]);    // percentage steps
+
+    //['darkred','darkred','red','coral','orange','yellow','greenyellow','lime','cyan','dodgerblue','darkblue'],
+    //[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]);    // percentage steps
 
 
 /* Landowner's pasture boundaries */
@@ -92,8 +96,8 @@ var usersRanch = L.geoJson(ranch, {
            });
          },
 	 click: function() {
-           var acres = feature.properties.GIS_acres.toFixed(2);
-           pp = "<tr><td><strong>Owner: </strong></td><td>Rock Creek Ranch</td></tr><tr><td><strong>Pasture: </strong></td><td>" + feature.properties.Pasture +  "</td></tr><tr><td><strong>Acres: </strong></td><td>" + acres + "</td></tr></table>"
+           var acres = feature.properties.Acres.toFixed(2);
+           pp = "<tr><td><strong>Owner: </strong></td><td>Rock Creek Ranch</td></tr><tr><td><strong>Pasture: </strong></td><td>" + feature.properties.PASTURE +  "</td></tr><tr><td><strong>Acres: </strong></td><td>" + acres + "</td></tr></table>"
          }
       });
    },
@@ -139,12 +143,15 @@ legend.onAdd = function (map) {
 legend.update = function () {
 
    if(indicator === 'ndvi') {
-       grades = ['-1', '-0.8', '-0.6', '-0.4', '-0.2', '0', '0.2', '0.4', '0.6', '0.8', '1'];
-       avgColors = ["#a50026", "#d73027", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850", "#006837"];
+       grades = ['1', '0.8', '0.6', '0.4', '0.2', '0', '-0.2', '-0.4', '-0.6', '-0.8', '-1'];
+       avgColors = ["#006837", "#1a9850", "#66bd63", "#a6d96a", "#d9ef8b", "#ffffbf", "#fee08b", "#fdae61", "#f46d43", "#d73027", "#a50026"];
        units = '';
    } else { // biomass
-       grades = ['0', '250', '500', '750', '1000', '1250', '1500', '1750', '2000', '2250', '2500'];
-       avgColors = ["#9e0142", "#d53e4f", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#e6f598", "#abdda4", "#66c2a5", "#3288bd", "#5e4fa2"];  
+       //grades = ['0', '125', '250', '375', '500', '750', '1000', '1250', '1750', '2250', '2500'];
+       //avgColors = ["#9e0142", "#d53e4f", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#e6f598", "#abdda4", "#66c2a5", "#3288bd", "#5e4fa2"];  
+       grades = ['>2500', '2250-2500', '2000-2250', '1750-2000', '1500-1750', '1250-1500', '1000-1250', '750-1000', '500-750', '250-500', '<250'];
+       avgColors = ["#5e4fa2", "#3288bd", "#66c2a5", "#abdda4", "#e6f598", "#ffffbf", "#fee08b", "#fdae61", "#f46d43", "#d53e4f", "#9e0142"];
+
        units = '<br>(lbs/acre)';
    }
  

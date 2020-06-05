@@ -15,6 +15,8 @@ ddMonth.empty();
 ddDay.empty();
 
 let indicator = '';
+let indicatorDisplay = 'Herbaceous Biomass';
+let indicatorDisplayStack = 'Herbaceous<br />Biomass';
 let selDay = '';
 let selMo = '';
 let selYr = '';
@@ -48,7 +50,12 @@ function refreshScene() {
  *-----------------------------*/
 
 $('#indicator').change(function() {
-   indicator = $(this).val();
+   indicator = $(this).val();	
+   if (indicator == 'biomass') { 
+       indicatorDisplay = 'Herbaceous Biomass'; indicatorDisplayStack = 'Herbaceous<br />Biomass';
+   } else {
+       indicatorDisplay = 'NDVI'; indicatorDisplayStack = 'NDVI';
+   }
    map.removeLayer(olay);
    updateMap();
 });

@@ -213,7 +213,7 @@ map.scrollWheelZoom.disable();
   };
 
   info.update = function () {
-     this._div.innerHTML = '<div style="background:#fff;opacity:0.7;border-radius:6px;padding:4px 6px"><h4>Rock Creek Ranch</h4><span style="font-size:14px"><strong>' + yr + ' ' + mo1 + mo2 + '</strong> &mdash; Average Biomass (lbs/acre)</span></div>';
+     this._div.innerHTML = '<div style="background:#fff;opacity:0.7;border-radius:6px;padding:4px 6px"><h4>Rock Creek Ranch</h4><span style="font-size:14px"><strong>' + yr + ' ' + mo1 + mo2 + '</strong> &mdash; Average Herbaceous Biomass (lbs/acre)</span></div>';
   };
 
   info.addTo(map);
@@ -235,7 +235,7 @@ map.scrollWheelZoom.disable();
                 labels.push( '&nbsp;<span style="opacity:0.8;background-color:' + avgColors[i] + '">&nbsp;&nbsp;&nbsp;&nbsp;</span> ' + grades[i] );
         }
 
-        div.innerHTML = '<div style="background:#fff;opacity:0.8;border-radius:6px;padding:4px 6px">Biomass (lbs/ac)<br>' + labels.join('<br>') + '</div>';
+        div.innerHTML = '<div style="background:#fff;opacity:0.8;border-radius:6px;padding:4px 6px">Herbaceous<br />Biomass (lbs/ac)<br>' + labels.join('<br>') + '</div>';
         return div;
   };
 
@@ -264,7 +264,7 @@ function getPastureStats() {
 function updateMap(arr) {
 
   tbl = '';
-  tbl = '<table class="table-sm" style="max-width:700px"><thead><tr><th>Date</th><th>Mgmt Area</th><th>Pasture</th><th>Acres</th><th>Biomass (lbs/acre)</th></tr></thead><tbody>';
+  tbl = '<table class="table-sm" style="max-width:700px"><thead><tr><th>Date</th><th>Mgmt Area</th><th>Pasture</th><th>Acres</th><th>Herbaceous<br />Biomass (lbs/acre)</th></tr></thead><tbody>';
 
   if(usersRanch) { map.removeLayer(usersRanch); }  // if usersRanch layer exists, remove it before updating
 
@@ -323,7 +323,7 @@ function updateMap(arr) {
       var acres = feature.properties.Acres.toFixed(2);
       layerName = feature.properties.PASTURE;
 
-      layer.bindPopup('<table class="popUpTbl"><tr class="border-bot"><td><strong>BIOMASS: </strong></td><td>' + pastureBiomass + ' lbs/acre</td></tr><tr><td><strong>Pasture: </strong></td><td>' + feature.properties.PASTURE + '</td></tr><tr><td><strong>Acres: </strong></td><td>' + acres + '</td></tr></table>');
+      layer.bindPopup('<table class="popUpTbl"><tr class="border-bot"><td><strong>Herbaceous<br />Biomass: </strong></td><td>' + pastureBiomass + ' lbs/acre</td></tr><tr><td><strong>Pasture: </strong></td><td>' + feature.properties.PASTURE + '</td></tr><tr><td><strong>Acres: </strong></td><td>' + acres + '</td></tr></table>');
 
       layer.on({
         mouseover: function(e) {

@@ -231,13 +231,21 @@ function multYrFunc(arr) {
    barcolorBelow = [];
 
    var total = 0;
+   var subtract = 0;
+   var avg = 0;
 
    for(var i = 0; i < arr.length; i++) {
       xx.push(arr[i].year);
 
       switch(measure) {
         case "biomass_mean_gpm":
-          arr[i].biomass_mean_gpm = arr[i].biomass_mean_gpm * 8.92179122; // convert gpm to lbs/acre
+          if (arr[i].biomass_mean_gpm == null) {
+            arr[i].biomass_mean_gpm = null;
+            subtract = subtract + 1;
+                  console.log("arrBiomass: " + arr[i].biomass_mean_gpm + ", subtract: " + subtract);
+          } else {
+            arr[i].biomass_mean_gpm = arr[i].biomass_mean_gpm * 8.92179122; // convert gpm to lbs/acre
+	  }
           yy.push(arr[i].biomass_mean_gpm);
           total += arr[i].biomass_mean_gpm;
           break;
@@ -259,13 +267,19 @@ function multYrFunc(arr) {
 
    }
 
-   var avg = total/arr.length;
+   if (measure == 'biomass_mean_gpm') {
+       avg = total/(arr.length - subtract);
+           console.log(measure);
+   } else {
+       avg = total/arr.length;
+   }
+	
    for(var i = 0; i < arr.length; i++) {
       av.push(avg);
    }
 
    for(var i = 0; i < yy.length; i++) {
-      if(yy[i] != 0) {
+      if(yy[i] != 0 && yy[i] != null) {
         newY.push(yy[i] - av[i]);
       } else {
         newY.push(yy[i]);
@@ -274,7 +288,9 @@ function multYrFunc(arr) {
    }
 
    for(var i = 0; i < newY.length; i++) {
-      if(newY[i] > 0) { 
+      if(newY[i] === null) {
+         // do nothing  
+      } else if (newY[i] > 0) { 
         yyAbove.push(newY[i]);
         xxAbove.push(xx[i]);
         barcolorAbove.push('#5c9cd2'); // blue

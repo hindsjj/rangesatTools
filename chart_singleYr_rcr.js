@@ -16,7 +16,7 @@ var ranch;
 let usrRanch ='Rinker_Rock_Creek_Ranch';
 let pasture = '';
 let measure = 'biomass';
-let measure_caps = 'Biomass';
+let measure_caps = 'Herbaceous Biomass';
 let intv = 'grazing';
 let clim = 'ppt';
 let moStart = '2.5';
@@ -149,7 +149,7 @@ $('select').change(function() {
       case "ddMeasure":
          measure = varVal;
          measure_caps = measure.toUpperCase();
-         if (measure_caps == 'BIOMASS') { measure_caps = 'Biomass'; }
+         if (measure_caps == 'BIOMASS') { measure_caps = 'Herbaceous Biomass'; }
          if (varVal == 'biomass') { units = '(lbs/acre)'; } else { units = ''; }
          if (measure_caps == 'NBR2') { measure_caps = 'NDTI'; }
          break;
@@ -561,7 +561,7 @@ function updateChart() {
           bgcolor: 'rgba(255,255,255,0.5)'
        },
        title: {
-          text: '' + measure_caps + '<br />' + usrRanch + ', Pasture: ' + pasture,
+          text: '' + measure_caps + '<br />' + usrRanch.replace(/_/g, " ") + ', Pasture: ' + pasture.replace(/_/g, " "),
           font: {
             family: 'Arial',
             size: 18

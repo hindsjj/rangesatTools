@@ -126,7 +126,7 @@ info.onAdd = function (map) {
 };
 
 info.update = function () {
-   this._div.innerHTML = '<div style="background:#fff;opacity:0.7;border-radius:6px;padding:4px 6px"><h4>Rock Creek Ranch</h4><span style="font-size:14px"><strong>' + indicator.toUpperCase() + ', ' + selScene.substring(21,23) + '/' + selScene.substring(23,25) + '/' +  selScene.substring(17,21) + '</strong></span></div>';
+   this._div.innerHTML = '<div style="background:#fff;opacity:0.7;border-radius:6px;padding:4px 6px"><h4>Rock Creek Ranch</h4><span style="font-size:14px"><strong>' + indicatorDisplay + ', ' + selScene.substring(21,23) + '/' + selScene.substring(23,25) + '/' +  selScene.substring(17,21) + '</strong></span></div>';
 };
 
 info.addTo(map);
@@ -161,7 +161,7 @@ legend.update = function () {
         labels.push( '&nbsp;<span style="opacity:0.8;background-color:' + avgColors[i] + '">&nbsp;&nbsp;&nbsp;&nbsp;</span> ' + grades[i] );
    }
 
-   this._div.innerHTML = '<div style="background:#fff;opacity:0.8;border-radius:6px;padding:4px 6px">' + indicator.toUpperCase() + units + '<br>' + labels.join('<br>') + '</div>';
+   this._div.innerHTML = '<div style="background:#fff;opacity:0.8;border-radius:6px;padding:4px 6px">' + indicatorDisplayStack + units + '<br>' + labels.join('<br>') + '</div>';
 };
 
 legend.addTo(map);
@@ -196,7 +196,7 @@ $('#q1').click(function(){
 
 function updateMap() {
 
-   var ucIndicator = indicator.toUpperCase();
+   var ucIndicator = indicatorDisplay;
    $('#vegInd').html(ucIndicator);
    $('#measure').html(ucIndicator);
    $('#scene').html(selScene);
@@ -242,7 +242,7 @@ function updateMap() {
       olay = L.leafletGeotiff(
          url="https://rangesat.org/api/raster/SageSteppe/" + selScene + "/" + indicator + "/?ranches=['" + usrRanch + "']",
          options={ band: 0,
-                name: 'BIOMASS',
+                name: 'Herbaceous<br />Biomass',
                 displayMin: 2,
                 displayMax: 280,
                 colorScale: 'biomasscolors',
@@ -291,7 +291,7 @@ function clickHandler(e) {
   }
   $("#rasterValue").html(rasterValue);
 
-  var html = "<table class='popUpTbl'><tr class='border-bot'><td><strong>" + indicator.toUpperCase() + ":</strong></td><td>" + rasterValue + "</td></tr>" + pp;
+  var html = "<table class='popUpTbl'><tr class='border-bot'><td><strong>" + indicatorDisplayStack + ":</strong></td><td>" + rasterValue + "</td></tr>" + pp;
 
   map.openPopup(html, e.latlng, {
     offset: L.point(0, 0)

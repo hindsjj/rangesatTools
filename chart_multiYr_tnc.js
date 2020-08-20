@@ -1,9 +1,11 @@
 // Define variables
 // Set defaults
-
+// Ex:  https://rangesat.org/api/ranchstats/multi-year/Zumwalt/?ranch=TNC&start_year=1984&end_year=2019&start_date=05-15&end_date=07-15&agg_func=mean
+// https://rangesat.org/api/pasturestats/multi-year/Zumwalt/?ranch=TNC&pasture=A1&start_year=1984&end_year=2019&start_date=05-15&end_date=07-15&agg_func=mean
 const baseUrl = 'https://rangesat.org/api/'; 
 const geoj = 'geojson/';
 const ps = 'pasturestats/'
+const rs = 'ranchstats/'
 const multYr = 'multi-year/';
 const interYr = 'inter-year/';
 const loc = 'Zumwalt/';
@@ -75,12 +77,13 @@ loadJSONFile(function(response) {
       return a.text == b.text ? 0 : a.text < b.text ? -1 : 1
    }));
  
-   // Prepend dropdown help text
+   // Prepend dropdown help text and "ALL" (ranchwide) option
+   $("#ddPasture").prepend("<option value='ALL'>ALL PASTURES</option>").val('');
    $("#ddPasture").prepend("<option value='' disabled='disabled'>- Select a pasture - </option>").val('');
 
    // Set default pasture selection
-   pasture = $('#ddPasture option:eq(1)').val();
-   $("#ddPasture option:eq(1)").attr('selected','selected');
+   pasture = $('#ddPasture option:eq(2)').val();
+   $("#ddPasture option:eq(2)").attr('selected','selected');
 
 });
 
@@ -186,7 +189,11 @@ updateChart();  // on initial page load
 function updateChart() {
 
    // Construct api endpoint URL
-   url = baseUrl + ps + multYr + loc + "?ranch=" + usrRanch + "&pasture=" + escape(pasture) + "&start_year=" + yr1 + "&end_year=" + yr2 + "&start_date=" + mm1 + "-" + dd1 + "&end_date=" + mm2 + "-" + dd2 + "&agg_func=" + stat;
+   if(pasture === 'ALL') {
+      url = baseUrl + rs + multYr + loc + "?ranch=" + usrRanch + "&start_year=" + yr1 + "&end_year=" + yr2 + "&start_date=" + mm1 + "-" + dd1 + "&end_date=" + mm2 + "-" + dd2 + "&agg_func=" + stat;
+   } else {
+      url = baseUrl + ps + multYr + loc + "?ranch=" + usrRanch + "&pasture=" + escape(pasture) + "&start_year=" + yr1 + "&end_year=" + yr2 + "&start_date=" + mm1 + "-" + dd1 + "&end_date=" + mm2 + "-" + dd2 + "&agg_func=" + stat;
+   }
    urlDL = url + '&units=en&drop=ndvi_mean;ndvi_sd;ndvi_10pct;ndvi_75pct;ndvi_90pct;ndvi_ci90;nbr_sd;nbr_mean;nbr_10pct;nbr_75pct;nbr_90pct;nbr_ci90;nbr2_mean;nbr2_sd;nbr2_10pct;nbr2_75pct;nbr2_90pct;nbr2_ci90;summer_vi_mean_gpm;fall_vi_mean_gpm&csv=True';
    urlDL2 = baseUrl + ps + interYr + loc + "?ranch=" + usrRanch + "&start_year=" + yr1 + "&end_year=" + yr2 + "&start_date=" + mm1 + "-" + dd1 + "&end_date=" + mm2 + "-" + dd2 + "&units=en&drop=ndvi_mean;ndvi_sd;ndvi_10pct;ndvi_75pct;ndvi_90pct;ndvi_ci90;nbr_sd;nbr_mean;nbr_10pct;nbr_75pct;nbr_90pct;nbr_ci90;nbr2_mean;nbr2_sd;nbr2_10pct;nbr2_75pct;nbr2_90pct;nbr2_ci90;summer_vi_mean_gpm;fall_vi_mean_gpm&csv=True";
 

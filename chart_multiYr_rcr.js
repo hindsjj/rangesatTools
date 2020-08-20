@@ -36,6 +36,7 @@ var xmlhttp = new XMLHttpRequest();
 let url ='';
 let urlDL ='';
 let urlDL2 ='';
+let lr = [];
 
 //------------------------------//
 // Load landowner pasture names //
@@ -257,6 +258,22 @@ function multYrFunc(arr) {
 
    }
 
+
+   /* Prepare x, y pairs for linear regression (trendline) */
+   lr = [];
+   for(var i = 0; i < yy.length; i++) {
+      lr.push([xx[i], yy[i]]);
+   }
+
+   let result = regression.linear(lr);
+   let gradient = result.equation[0];
+   let yIntercept = result.equation[1];
+
+   y0 = (gradient * yr1) + yIntercept;
+   y1 = (gradient * yr2) + yIntercept;
+   /* end trendline */
+
+
    if (measure == 'biomass_mean_gpm') {
        avg = total/(arr.length - subtract);
 	   console.log(measure);
@@ -318,6 +335,18 @@ function multYrFunc(arr) {
         type: 'line',
         name: 'Average',
         mode: 'lines',
+      },
+      {
+        x: [yr1, yr2],
+        y: [y0, y1],
+        type: 'line',
+        name: 'Trendline',
+        mode: 'lines',
+        line: {
+             color: '#000000',
+             width: 2,
+             dash: 'dot'
+        }
       }
    ];
 

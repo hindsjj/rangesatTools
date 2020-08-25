@@ -5,6 +5,7 @@ const baseUrl = 'https://rangesat.org/api/';
 const geoj = 'geojson/';
 const gmet = 'gridmet/';
 const ps = 'pasturestats/'
+const rs = 'ranchstats/'
 //const sy = 'single-year/';
 const sym = 'single-year-monthly/';
 const sp = 'seasonal-progression/';
@@ -91,11 +92,12 @@ function getPastures() {
       }));
 
       // Prepend dropdown help text
+      $("#ddPasture").prepend("<option value='ALL'>ALL PASTURES</option>").val('');
       $("#ddPasture").prepend("<option value='' disabled='disabled'>- Select a pasture - </option>").val('');
 
       // Set default pasture selection
-      pasture = $('#ddPasture option:eq(1)').val();
-      $("#ddPasture option:eq(1)").attr('selected','selected');
+      pasture = $('#ddPasture option:eq(2)').val();
+      $("#ddPasture option:eq(2)").attr('selected','selected');
 
    });
 
@@ -182,11 +184,17 @@ updateGridmet();  // on initial page load
 
 function updateGridmet() {
 
-   // Single Year Monthly: gridmet monthly-aggregated data for selected year
-   gmetUrlSy = baseUrl + gmet + sym + loc + usrRanch + "/" + escape(pasture) + "/?year=" + yr + "&units=English";
-
-   // Annual Progression Monthly: gridmet monthly-aggregated data for multiple years
-   gmetUrlMy = baseUrl + gmet + apm + loc + usrRanch + "/" + escape(pasture) + "/?year=" + yr + "&units=English";
+   if(pasture === 'ALL') {
+      // Single Year Monthly, ALL pastures: gridmet monthly-aggregated data for selected year
+      gmetUrlSy = baseUrl + gmet + sym + loc + usrRanch + "/?year=" + yr + "&units=English";
+      // Annual Progression Monthly, ALL pastures: gridmet monthly-aggregated data for multiple years
+      gmetUrlMy = baseUrl + gmet + apm + loc + usrRanch + "/?year=" + yr + "&units=English";
+   } else {
+      // Single Year Monthly: gridmet monthly-aggregated data for selected year
+      gmetUrlSy = baseUrl + gmet + sym + loc + usrRanch + "/" + escape(pasture) + "/?year=" + yr + "&units=English";
+      // Annual Progression Monthly: gridmet monthly-aggregated data for multiple years
+      gmetUrlMy = baseUrl + gmet + apm + loc + usrRanch + "/" + escape(pasture) + "/?year=" + yr + "&units=English";
+   }
 
    xmlhttp1.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
@@ -289,7 +297,11 @@ updateSeasonProg();  // on initial page load
 function updateSeasonProg() {
 
    // seasonal progression data for selected year
-   spUrl = baseUrl + ps + sp + loc + "?ranch=" + usrRanch + "&pasture=" + escape(pasture);
+   if(pasture === 'ALL') {
+      spUrl = baseUrl + rs + sp + loc + "?ranch=" + usrRanch;
+   } else {
+      spUrl = baseUrl + ps + sp + loc + "?ranch=" + usrRanch + "&pasture=" + escape(pasture);
+   }
 
    xmlhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
@@ -381,7 +393,11 @@ updateStats();  // on initial page load
 
 function updateStats() {
 
-   url = baseUrl + ps + sym + loc + "?ranch=" + usrRanch + "&pasture=" + escape(pasture) + "&year=" + yr;
+   if(pasture === 'ALL') {
+      url = baseUrl + rs + sym + loc + "?ranch=" + usrRanch + "&year=" + yr;
+   } else {
+      url = baseUrl + ps + sym + loc + "?ranch=" + usrRanch + "&pasture=" + escape(pasture) + "&year=" + yr;
+   }
    urlDL = url + '&units=en&drop=nbr2_10pct;nbr2_75pct;nbr2_90pct;nbr2_ci90;nbr2_mean;nbr2_sd;nbr_10pct;nbr_75pct;nbr_90pct;nbr_ci90;nbr_mean;nbr_sd&csv=True';
 
    $('#csv').attr('href',urlDL);
